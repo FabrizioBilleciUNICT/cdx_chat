@@ -34,6 +34,8 @@
   "error_loading_messages": "Errore nel caricamento dei messaggi",
   "retry": "Riprova",
   "message_deleted": "Messaggio eliminato",
-  "error_sending_message": "Errore nell'invio del messaggio"
+  "error_sending_message": "Errore nell'invio del messaggio",
+  "today": "Oggi",
+  "yesterday": "Ieri"
 }
 

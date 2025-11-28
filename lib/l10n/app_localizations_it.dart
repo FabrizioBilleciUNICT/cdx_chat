@@ -75,4 +75,10 @@ class CdxChatLocalizationsIt extends CdxChatLocalizations {
 
   @override
   String get error_sending_message => 'Errore nell\'invio del messaggio';
+
+  @override
+  String get today => 'Oggi';
+
+  @override
+  String get yesterday => 'Ieri';
 }

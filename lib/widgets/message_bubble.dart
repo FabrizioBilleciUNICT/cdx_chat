@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/chat_message.dart';
 import '../models/chat_theme.dart';
+import '../utils/date_formatter.dart';
 
 /// Default message bubble widget.
 ///
@@ -210,6 +211,8 @@ class MessageBubble extends StatelessWidget {
             message.text,
             style: textStyle,
           ),
+          const SizedBox(height: 4),
+          _buildTimestamp(),
         ],
       ),
     );
@@ -248,6 +251,20 @@ class MessageBubble extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTimestamp() {
+    final timeString = DateFormatter.format(
+      message.createdAt,
+      'HH:mm',
+    );
+    return Text(
+      timeString,
+      style: TextStyle(
+        color: theme.minorText,
+        fontSize: 11,
       ),
     );
   }

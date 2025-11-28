@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../services/chat_service.dart';
 import '../models/chat_message.dart';
 import '../models/chat_theme.dart';
@@ -158,7 +159,9 @@ class _ChatViewState extends State<ChatView> {
     if (_focusNode.hasFocus) {
       // Scroll to bottom when keyboard opens
       Future.delayed(const Duration(milliseconds: 300), () {
-        _scrollToBottom();
+        if (mounted) {
+          _scrollToBottom();
+        }
       });
     }
   }
@@ -235,20 +238,27 @@ class _ChatViewState extends State<ChatView> {
             });
           }
 
-          return Column(
-            children: [
-              // Message list
-              Expanded(
-                child: _buildMessagesList(provider),
-              ),
-              
-              // Reply preview bar
-              if (provider.replyingTo != null)
-                _buildReplyBar(provider.replyingTo!),
-              
-              // Input area
-              _buildInputArea(provider),
-            ],
+          return GestureDetector(
+            onTap: () {
+              // Unfocus when tapping outside the input field
+              _focusNode.unfocus();
+            },
+            behavior: HitTestBehavior.translucent,
+            child: Column(
+              children: [
+                // Message list
+                Expanded(
+                  child: _buildMessagesList(provider),
+                ),
+                
+                // Reply preview bar
+                if (provider.replyingTo != null)
+                  _buildReplyBar(provider.replyingTo!),
+                
+                // Input area
+                _buildInputArea(provider),
+              ],
+            ),
           );
         },
       ),
@@ -340,23 +350,30 @@ class _ChatViewState extends State<ChatView> {
 
           final message = provider.messages[index];
           final isLast = index == provider.messages.length - 1;
+          final showDateSeparator = index == 0 || 
+              !_isSameDay(provider.messages[index - 1].createdAt, message.createdAt);
 
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: isLast ? 0 : _theme.messageSpacing,
-            ),
-            child: widget.messageBuilder != null
-                ? widget.messageBuilder!(context, message)
-                : MessageBubble(
-                    message: message,
-                    currentUserId: widget.currentUserId,
-                    theme: _theme,
-                    onLongPress: widget.enableReply
-                        ? () => _handleReply(message)
-                        : null,
-                    showAvatar: true,
-                    showAuthorName: true,
-                  ),
+          return Column(
+            children: [
+              if (showDateSeparator) _buildDateSeparator(message),
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: isLast ? 0 : _theme.messageSpacing,
+                ),
+                child: widget.messageBuilder != null
+                    ? widget.messageBuilder!(context, message)
+                    : MessageBubble(
+                        message: message,
+                        currentUserId: widget.currentUserId,
+                        theme: _theme,
+                        onLongPress: widget.enableReply
+                            ? () => _handleReply(message)
+                            : null,
+                        showAvatar: true,
+                        showAuthorName: true,
+                      ),
+              ),
+            ],
           );
         },
       ),
@@ -419,6 +436,57 @@ class _ChatViewState extends State<ChatView> {
     );
   }
 
+  bool _isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
+  String _formatDateHeader(DateTime date) {
+    final loc = CdxChatLocalizations.of(context);
+    if (loc == null) {
+      // Fallback if localizations are not available
+      final locale = Localizations.localeOf(context);
+      return DateFormat('EEEE d MMMM yyyy', locale.toString()).format(date);
+    }
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final messageDate = DateTime(date.year, date.month, date.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final locale = Localizations.localeOf(context);
+
+    if (messageDate == today) {
+      return loc.today;
+    } else if (messageDate == yesterday) {
+      return loc.yesterday;
+    } else {
+      // Format: "Monday, 15 January 2024" or similar based on locale
+      return DateFormat('EEEE d MMMM yyyy', locale.toString()).format(date);
+    }
+  }
+
+  Widget _buildDateSeparator(ChatMessage message) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: _theme.minorText.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          _formatDateHeader(message.createdAt),
+          style: TextStyle(
+            color: _theme.minorText,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildInputArea(ChatProvider provider) {
     final loc = CdxChatLocalizations.of(context);
     
@@ -439,7 +507,6 @@ class _ChatViewState extends State<ChatView> {
               focusNode: _focusNode,
               maxLines: null,
               minLines: 1,
-              maxLength: widget.config.maxMessageLength,
               style: TextStyle(color: _theme.inputTextColor),
               decoration: widget.inputDecoration ??
                   InputDecoration(
@@ -466,14 +533,24 @@ class _ChatViewState extends State<ChatView> {
                       vertical: 12,
                     ),
                   ),
-              onSubmitted: (_) => _sendMessage(),
+              onSubmitted: (_) {
+                if (provider.inputController.text.trim().isNotEmpty) {
+                  _sendMessage();
+                }
+              },
             ),
           ),
           const SizedBox(width: 8),
-          IconButton(
-            icon: widget.sendIcon ?? const Icon(Icons.send),
-            onPressed: _sendMessage,
-            color: _theme.myBubbleColor,
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: provider.inputController,
+            builder: (context, value, child) {
+              final hasText = value.text.trim().isNotEmpty;
+              return IconButton(
+                icon: widget.sendIcon ?? const Icon(Icons.send),
+                onPressed: hasText ? _sendMessage : null,
+                color: hasText ? _theme.myBubbleColor : _theme.inputTextColor.withOpacity(0.3),
+              );
+            },
           ),
         ],
       ),

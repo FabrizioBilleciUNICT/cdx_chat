@@ -226,6 +226,18 @@ abstract class CdxChatLocalizations {
   /// In en, this message translates to:
   /// **'Error sending message'**
   String get error_sending_message;
+
+  /// Label for today's date in date separator
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// Label for yesterday's date in date separator
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
 }
 
 class _CdxChatLocalizationsDelegate

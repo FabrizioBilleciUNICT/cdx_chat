@@ -93,6 +93,14 @@
   "error_sending_message": "Error sending message",
   "@error_sending_message": {
     "description": "Error message when sending a message fails"
+  },
+  "today": "Today",
+  "@today": {
+    "description": "Label for today's date in date separator"
+  },
+  "yesterday": "Yesterday",
+  "@yesterday": {
+    "description": "Label for yesterday's date in date separator"
   }
 }
 
