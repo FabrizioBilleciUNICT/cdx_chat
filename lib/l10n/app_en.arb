@@ -1,0 +1,98 @@
+{
+  "@@locale": "en",
+  "chat": "Chat",
+  "@chat": {
+    "description": "Title for chat section"
+  },
+  "type_a_message": "Type a message...",
+  "@type_a_message": {
+    "description": "Placeholder text for message input field"
+  },
+  "send": "Send",
+  "@send": {
+    "description": "Button text to send a message"
+  },
+  "replying_to": "Replying to",
+  "@replying_to": {
+    "description": "Label showing who you are replying to"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete action label"
+  },
+  "delete_message": "Delete message",
+  "@delete_message": {
+    "description": "Title for delete message dialog"
+  },
+  "q_delete_message": "Are you sure you want to delete this message?",
+  "@q_delete_message": {
+    "description": "Confirmation question for deleting a message"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm button text"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "block_user": "Block user",
+  "@block_user": {
+    "description": "Block user action label"
+  },
+  "unblock_user": "Unblock user",
+  "@unblock_user": {
+    "description": "Unblock user action label"
+  },
+  "q_block_user": "Are you sure you want to block this user?",
+  "@q_block_user": {
+    "description": "Confirmation question for blocking a user"
+  },
+  "q_unblock_user": "Are you sure you want to unblock this user?",
+  "@q_unblock_user": {
+    "description": "Confirmation question for unblocking a user"
+  },
+  "message_empty": "Message cannot be empty",
+  "@message_empty": {
+    "description": "Error message when message is empty"
+  },
+  "message_too_long": "Message cannot exceed {maxLength} characters",
+  "@message_too_long": {
+    "description": "Error message when message is too long",
+    "placeholders": {
+      "maxLength": {
+        "type": "int"
+      }
+    }
+  },
+  "message_too_many_lines": "Message cannot exceed {maxLines} lines",
+  "@message_too_many_lines": {
+    "description": "Error message when message has too many lines",
+    "placeholders": {
+      "maxLines": {
+        "type": "int"
+      }
+    }
+  },
+  "no_messages": "No messages",
+  "@no_messages": {
+    "description": "Message shown when there are no messages"
+  },
+  "error_loading_messages": "Error loading messages",
+  "@error_loading_messages": {
+    "description": "Error message when messages fail to load"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+  "message_deleted": "Message deleted",
+  "@message_deleted": {
+    "description": "Text shown for deleted messages"
+  },
+  "error_sending_message": "Error sending message",
+  "@error_sending_message": {
+    "description": "Error message when sending a message fails"
+  }
+}
+

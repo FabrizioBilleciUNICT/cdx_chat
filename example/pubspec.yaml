@@ -1,0 +1,30 @@
+name: cdx_chat_example
+description: Example app demonstrating the cdx_chat package
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.1
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cdx_chat:
+    path: ../
+  provider: ^6.1.5+1
+
+dependency_overrides:
+  intl: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+

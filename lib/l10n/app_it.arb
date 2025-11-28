@@ -1,0 +1,39 @@
+{
+  "@@locale": "it",
+  "chat": "Chat",
+  "type_a_message": "Scrivi un messaggio...",
+  "send": "Invia",
+  "replying_to": "Rispondi a",
+  "delete": "Elimina",
+  "delete_message": "Elimina messaggio",
+  "q_delete_message": "Sei sicuro di voler eliminare questo messaggio?",
+  "confirm": "Conferma",
+  "cancel": "Annulla",
+  "block_user": "Blocca utente",
+  "unblock_user": "Sblocca utente",
+  "q_block_user": "Sei sicuro di voler bloccare questo utente?",
+  "q_unblock_user": "Sei sicuro di voler sbloccare questo utente?",
+  "message_empty": "Il messaggio non può essere vuoto",
+  "message_too_long": "Il messaggio non può superare {maxLength} caratteri",
+  "@message_too_long": {
+    "placeholders": {
+      "maxLength": {
+        "type": "int"
+      }
+    }
+  },
+  "message_too_many_lines": "Il messaggio non può superare {maxLines} righe",
+  "@message_too_many_lines": {
+    "placeholders": {
+      "maxLines": {
+        "type": "int"
+      }
+    }
+  },
+  "no_messages": "Nessun messaggio",
+  "error_loading_messages": "Errore nel caricamento dei messaggi",
+  "retry": "Riprova",
+  "message_deleted": "Messaggio eliminato",
+  "error_sending_message": "Errore nell'invio del messaggio"
+}
+

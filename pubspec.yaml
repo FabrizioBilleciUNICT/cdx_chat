@@ -1,0 +1,26 @@
+name: cdx_chat
+description: A Flutter package for managing chat with support for messages, replies, user blocking, and real-time updates.
+version: 0.0.1
+homepage: https://github.com/FabrizioBilleciUNICT/cdx_chat
+repository: https://github.com/FabrizioBilleciUNICT/cdx_chat
+
+environment:
+  sdk: ^3.10.1
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  provider: ^6.1.5+1
+  intl: ^0.20.2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  generate: true
