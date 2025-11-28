@@ -81,4 +81,28 @@ class CdxChatLocalizationsIt extends CdxChatLocalizations {
 
   @override
   String get yesterday => 'Ieri';
+
+  @override
+  String get report => 'Segnala';
+
+  @override
+  String get reply => 'Rispondi';
+
+  @override
+  String get q_report_message => 'Perché stai segnalando questo messaggio?';
+
+  @override
+  String get q_report_user => 'Vuoi segnalare o bloccare questo utente?';
+
+  @override
+  String get report_user => 'Segnala utente';
+
+  @override
+  String get report_done => 'Segnalazione inviata con successo';
+
+  @override
+  String get next => 'Avanti';
+
+  @override
+  String get end => 'Invia';
 }

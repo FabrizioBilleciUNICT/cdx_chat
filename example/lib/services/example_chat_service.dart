@@ -202,5 +202,18 @@ class ExampleChatService implements ChatService {
     }
     _messageControllers.clear();
   }
+
+  @override
+  Future<void> reportMessage({
+    required String chatId,
+    required String messageId,
+    required String reasonId
+  }) async {}
+
+  @override
+  Future<void> reportUser({
+    required String chatId,
+    required String userId
+  }) async {}
 }
 

@@ -201,5 +201,18 @@ class InMemoryChatService implements ChatService {
     _blockedUsers.clear();
     _nextId = 1;
   }
+
+  @override
+  Future<void> reportMessage({
+    required String chatId,
+    required String messageId,
+    required String reasonId
+  }) async {}
+
+  @override
+  Future<void> reportUser({
+    required String chatId,
+    required String userId
+  }) async {}
 }
 

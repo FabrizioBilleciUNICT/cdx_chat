@@ -121,5 +121,29 @@ abstract class ChatService {
     required String chatId,
     required String userId,
   });
+
+  /// Reports a message.
+  ///
+  /// - [chatId]: ID of the chat
+  /// - [messageId]: ID of the message to report
+  /// - [reasonId]: ID of the report reason
+  ///
+  /// Returns a future that completes when the report is sent.
+  Future<void> reportMessage({
+    required String chatId,
+    required String messageId,
+    required String reasonId,
+  });
+
+  /// Reports a user.
+  ///
+  /// - [chatId]: ID of the chat
+  /// - [userId]: ID of the user to report
+  ///
+  /// Returns a future that completes when the report is sent.
+  Future<void> reportUser({
+    required String chatId,
+    required String userId,
+  });
 }
 

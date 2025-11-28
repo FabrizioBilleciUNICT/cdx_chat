@@ -32,6 +32,10 @@ class MessageBubble extends StatelessWidget {
   /// Callback when avatar is tapped.
   final VoidCallback? onAvatarTap;
   
+  /// Callback when reply preview is tapped.
+  /// [messageId] is the ID of the message being replied to.
+  final void Function(String messageId)? onReplyPreviewTap;
+  
   /// Whether to show the avatar.
   final bool showAvatar;
   
@@ -46,6 +50,7 @@ class MessageBubble extends StatelessWidget {
     required this.theme,
     this.onLongPress,
     this.onAvatarTap,
+    this.onReplyPreviewTap,
     this.showAvatar = true,
     this.showAuthorName = true,
   });
@@ -221,36 +226,41 @@ class MessageBubble extends StatelessWidget {
   Widget _buildReplyPreview() {
     final snapshot = message.replyToSnapshot!;
     
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: theme.replyPadding,
-      decoration: BoxDecoration(
-        color: theme.replyIndicatorColor,
-        borderRadius: BorderRadius.circular(theme.replyBorderRadius),
-        border: Border(
-          left: BorderSide(
-            color: theme.replyIndicatorColor,
-            width: 3,
+    return GestureDetector(
+      onTap: onReplyPreviewTap != null && snapshot.messageId.isNotEmpty
+          ? () => onReplyPreviewTap!(snapshot.messageId)
+          : null,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: theme.replyPadding,
+        decoration: BoxDecoration(
+          color: theme.replyIndicatorColor,
+          borderRadius: BorderRadius.circular(theme.replyBorderRadius),
+          border: Border(
+            left: BorderSide(
+              color: theme.replyIndicatorColor,
+              width: 3,
+            ),
           ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            snapshot.authorDisplayName,
-            style: theme.replyAuthorStyle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            snapshot.textPreview,
-            style: theme.replyTextStyle,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              snapshot.authorDisplayName,
+              style: theme.replyAuthorStyle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              snapshot.textPreview,
+              style: theme.replyTextStyle,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }

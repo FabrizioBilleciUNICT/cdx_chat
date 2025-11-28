@@ -81,4 +81,28 @@ class CdxChatLocalizationsEn extends CdxChatLocalizations {
 
   @override
   String get yesterday => 'Yesterday';
+
+  @override
+  String get report => 'Report';
+
+  @override
+  String get reply => 'Reply';
+
+  @override
+  String get q_report_message => 'Why are you reporting this message?';
+
+  @override
+  String get q_report_user => 'Do you want to report or block this user?';
+
+  @override
+  String get report_user => 'Report user';
+
+  @override
+  String get report_done => 'Report submitted successfully';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get end => 'Submit';
 }

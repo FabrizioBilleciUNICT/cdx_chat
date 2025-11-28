@@ -36,6 +36,15 @@
   "message_deleted": "Messaggio eliminato",
   "error_sending_message": "Errore nell'invio del messaggio",
   "today": "Oggi",
-  "yesterday": "Ieri"
+  "yesterday": "Ieri",
+  "report": "Segnala",
+  "reply": "Rispondi",
+  "q_report_message": "Perché stai segnalando questo messaggio?",
+  "q_report_user": "Vuoi segnalare o bloccare questo utente?",
+  "report_user": "Segnala utente",
+  "report_done": "Segnalazione inviata con successo",
+  "next": "Avanti",
+  "end": "Invia",
+  "reply": "Rispondi"
 }
 

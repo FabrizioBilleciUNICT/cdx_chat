@@ -54,10 +54,12 @@ class ChatView extends StatefulWidget {
   final ChatAppActions? appActions;
   
   /// Custom message builder.
-  final Widget Function(BuildContext, ChatMessage)? messageBuilder;
+  /// The third parameter is the callback to scroll to a replied message.
+  final Widget Function(BuildContext, ChatMessage, void Function(String messageId))? messageBuilder;
   
   /// Custom reply preview builder.
-  final Widget Function(BuildContext, ChatMessage)? replyPreviewBuilder;
+  /// The third parameter is the callback to scroll to the replied message.
+  final Widget Function(BuildContext, ChatMessage, void Function(String messageId))? replyPreviewBuilder;
   
   /// Whether reply functionality is enabled.
   final bool enableReply;
@@ -76,6 +78,11 @@ class ChatView extends StatefulWidget {
   
   /// Callback when an error occurs.
   final VoidCallback? onError;
+
+  /// Callback when reply preview is tapped.
+  /// [messageId] is the ID of the message being replied to.
+  /// Should scroll to that message in the chat.
+  final void Function(String messageId)? onReplyPreviewTap;
 
   /// Custom loading indicator builder.
   /// If not provided, uses default CircularProgressIndicator.
@@ -99,11 +106,20 @@ class ChatView extends StatefulWidget {
     this.sendIcon,
     this.onMessageSent,
     this.onError,
+    this.onReplyPreviewTap,
     this.loadingBuilder,
   });
 
   @override
   State<ChatView> createState() => _ChatViewState();
+  
+  /// Scroll to a specific message by ID
+  /// This method can be called from outside to scroll to a message
+  static void scrollToMessage(GlobalKey<State<ChatView>>? key, String messageId) {
+    if (key?.currentState is _ChatViewState) {
+      (key!.currentState as _ChatViewState)._scrollToMessage(messageId);
+    }
+  }
 }
 
 class _ChatViewState extends State<ChatView> {
@@ -114,6 +130,8 @@ class _ChatViewState extends State<ChatView> {
   
   bool _isNearBottom = true;
   bool _isInitialLoad = true;
+  bool _isProgrammaticScroll = false;
+  int _lastMessageCount = 0;
 
   @override
   void initState() {
@@ -146,7 +164,10 @@ class _ChatViewState extends State<ChatView> {
       final currentScroll = _scrollController.position.pixels;
       final threshold = 100.0;
       
-      _isNearBottom = (maxScroll - currentScroll) < threshold;
+      // Only update _isNearBottom if this is user scrolling, not programmatic
+      if (!_isProgrammaticScroll) {
+        _isNearBottom = (maxScroll - currentScroll) < threshold;
+      }
       
       // Mark as read when near bottom
       if (_isNearBottom && _controller.messages.isNotEmpty) {
@@ -156,30 +177,70 @@ class _ChatViewState extends State<ChatView> {
   }
 
   void _onFocusChange() {
-    if (_focusNode.hasFocus) {
-      // Scroll to bottom when keyboard opens
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (mounted) {
-          _scrollToBottom();
-        }
-      });
-    }
+    // Don't auto-scroll when keyboard opens - let user control scroll position
   }
 
   void _scrollToBottom({bool animated = true}) {
-    if (_scrollController.hasClients) {
-      if (animated) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      } else {
-        _scrollController.jumpTo(
-          _scrollController.position.maxScrollExtent,
-        );
-      }
+    if (!_scrollController.hasClients) return;
+    
+    // Don't scroll if already at bottom (within threshold)
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if ((maxScroll - currentScroll) < 10.0) {
+      // Already at bottom, just update flag
+      _isNearBottom = true;
+      return;
     }
+    
+    _isProgrammaticScroll = true;
+    final targetPosition = maxScroll;
+    
+    if (animated) {
+      _scrollController.animateTo(
+        targetPosition,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      ).then((_) {
+        // Reset flag after animation, but keep _isNearBottom as true since we're at bottom
+        Future.delayed(const Duration(milliseconds: 150), () {
+          if (mounted) {
+            _isProgrammaticScroll = false;
+            _isNearBottom = true;
+          }
+        });
+      });
+    } else {
+      _scrollController.jumpTo(targetPosition);
+      _isProgrammaticScroll = false;
+      _isNearBottom = true;
+    }
+  }
+
+  void _scrollToMessage(String messageId) {
+    if (!_scrollController.hasClients) return;
+    
+    // Find the message in the list
+    final messages = _provider.messages;
+    final messageIndex = messages.indexWhere((msg) => msg.id == messageId);
+    
+    if (messageIndex == -1) return;
+    
+    // Calculate approximate position (each message is roughly 80px + spacing)
+    final itemHeight = 80.0 + _theme.messageSpacing;
+    final targetPosition = messageIndex * itemHeight;
+    
+    // Ensure we don't scroll beyond bounds
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final clampedPosition = targetPosition.clamp(0.0, maxScroll);
+    
+    _isProgrammaticScroll = true;
+    _scrollController.animateTo(
+      clampedPosition,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    ).then((_) {
+      _isProgrammaticScroll = false;
+    });
   }
 
   Future<void> _sendMessage() async {
@@ -231,11 +292,29 @@ class _ChatViewState extends State<ChatView> {
       value: _provider,
       child: Consumer<ChatProvider>(
         builder: (context, provider, child) {
-          // Auto scroll when new messages arrive (if near bottom)
-          if (!_isInitialLoad && _isNearBottom && provider.messages.isNotEmpty) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _scrollToBottom();
-            });
+          // Auto scroll only if user is near bottom and a new message arrived
+          final messageCount = provider.messages.length;
+          final newMessageArrived = messageCount > _lastMessageCount;
+          
+          if (newMessageArrived) {
+            _lastMessageCount = messageCount;
+            
+            if (!_isInitialLoad && _isNearBottom) {
+              // Wait for the list to fully update before scrolling
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted && _isNearBottom && !_isProgrammaticScroll) {
+                  // Use a small delay to ensure list is fully rendered and scroll position is stable
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    if (mounted && _isNearBottom && !_isProgrammaticScroll) {
+                      _scrollToBottom();
+                    }
+                  });
+                }
+              });
+            }
+          } else if (messageCount != _lastMessageCount) {
+            // Update count even if not scrolling (e.g., message deleted)
+            _lastMessageCount = messageCount;
           }
 
           return GestureDetector(
@@ -361,7 +440,7 @@ class _ChatViewState extends State<ChatView> {
                   bottom: isLast ? 0 : _theme.messageSpacing,
                 ),
                 child: widget.messageBuilder != null
-                    ? widget.messageBuilder!(context, message)
+                    ? widget.messageBuilder!(context, message, widget.onReplyPreviewTap ?? _scrollToMessage)
                     : MessageBubble(
                         message: message,
                         currentUserId: widget.currentUserId,
@@ -369,6 +448,7 @@ class _ChatViewState extends State<ChatView> {
                         onLongPress: widget.enableReply
                             ? () => _handleReply(message)
                             : null,
+                        onReplyPreviewTap: widget.onReplyPreviewTap ?? _scrollToMessage,
                         showAvatar: true,
                         showAuthorName: true,
                       ),
@@ -395,7 +475,7 @@ class _ChatViewState extends State<ChatView> {
         children: [
           Expanded(
             child: widget.replyPreviewBuilder != null
-                ? widget.replyPreviewBuilder!(context, message)
+                ? widget.replyPreviewBuilder!(context, message, widget.onReplyPreviewTap ?? _scrollToMessage)
                 : Container(
                     padding: _theme.replyPadding,
                     decoration: BoxDecoration(
@@ -427,7 +507,7 @@ class _ChatViewState extends State<ChatView> {
                   ),
           ),
           IconButton(
-            icon: const Icon(Icons.close),
+            icon: Icon(Icons.close, color: _theme.minorText),
             onPressed: _cancelReply,
             iconSize: 20,
           ),

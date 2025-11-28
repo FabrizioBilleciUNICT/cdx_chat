@@ -238,6 +238,54 @@ abstract class CdxChatLocalizations {
   /// In en, this message translates to:
   /// **'Yesterday'**
   String get yesterday;
+
+  /// Report action label
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get report;
+
+  /// Reply action label
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get reply;
+
+  /// Question for reporting a message
+  ///
+  /// In en, this message translates to:
+  /// **'Why are you reporting this message?'**
+  String get q_report_message;
+
+  /// Question for reporting/blocking a user
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to report or block this user?'**
+  String get q_report_user;
+
+  /// Report user checkbox label
+  ///
+  /// In en, this message translates to:
+  /// **'Report user'**
+  String get report_user;
+
+  /// Success message after submitting a report
+  ///
+  /// In en, this message translates to:
+  /// **'Report submitted successfully'**
+  String get report_done;
+
+  /// Next button text
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// Submit button text
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get end;
 }
 
 class _CdxChatLocalizationsDelegate

@@ -101,6 +101,42 @@
   "yesterday": "Yesterday",
   "@yesterday": {
     "description": "Label for yesterday's date in date separator"
+  },
+  "report": "Report",
+  "@report": {
+    "description": "Report action label"
+  },
+  "reply": "Reply",
+  "@reply": {
+    "description": "Reply action label"
+  },
+  "q_report_message": "Why are you reporting this message?",
+  "@q_report_message": {
+    "description": "Question for reporting a message"
+  },
+  "q_report_user": "Do you want to report or block this user?",
+  "@q_report_user": {
+    "description": "Question for reporting/blocking a user"
+  },
+  "report_user": "Report user",
+  "@report_user": {
+    "description": "Report user checkbox label"
+  },
+  "report_done": "Report submitted successfully",
+  "@report_done": {
+    "description": "Success message after submitting a report"
+  },
+  "next": "Next",
+  "@next": {
+    "description": "Next button text"
+  },
+  "end": "Submit",
+  "@end": {
+    "description": "Submit button text"
+  },
+  "reply": "Reply",
+  "@reply": {
+    "description": "Reply action label"
   }
 }
 
