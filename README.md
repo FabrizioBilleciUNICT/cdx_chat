@@ -1,8 +1,16 @@
+<div align="center">
+  <img src="https://raw.githubusercontent.com/FabrizioBilleciUNICT/cdx_chat/master/cdx_chat.png" alt="CdxChat Logo" width="400">
+</div>
+
+<div align="center">
+
 # cdx_chat
 
 [![pub package](https://img.shields.io/pub/v/cdx_chat.svg)](https://pub.dev/packages/cdx_chat)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D1.17.0-blue.svg)](https://flutter.dev)
+
+</div>
 
 A comprehensive Flutter package for managing chat with support for messages, replies, user blocking, and real-time updates. Built with a clean, extensible architecture that follows Flutter best practices and requires zero external dependencies (except `provider` and `intl`).
 
