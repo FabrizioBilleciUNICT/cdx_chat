@@ -1,0 +1,48 @@
+{
+  "@@locale": "es",
+  "chat": "Chat",
+  "type_a_message": "Escribe un mensaje...",
+  "send": "Enviar",
+  "replying_to": "Respondiendo a",
+  "delete": "Eliminar",
+  "delete_message": "Eliminar mensaje",
+  "q_delete_message": "¿Seguro que quieres eliminar este mensaje?",
+  "confirm": "Confirmar",
+  "cancel": "Cancelar",
+  "block_user": "Bloquear usuario",
+  "unblock_user": "Desbloquear usuario",
+  "q_block_user": "¿Seguro que quieres bloquear a este usuario?",
+  "q_unblock_user": "¿Seguro que quieres desbloquear a este usuario?",
+  "message_empty": "El mensaje no puede estar vacío",
+  "message_too_long": "El mensaje no puede superar {maxLength} caracteres",
+  "@message_too_long": {
+    "placeholders": {
+      "maxLength": {
+        "type": "int"
+      }
+    }
+  },
+  "message_too_many_lines": "El mensaje no puede superar {maxLines} líneas",
+  "@message_too_many_lines": {
+    "placeholders": {
+      "maxLines": {
+        "type": "int"
+      }
+    }
+  },
+  "no_messages": "No hay mensajes",
+  "error_loading_messages": "Error al cargar los mensajes",
+  "retry": "Reintentar",
+  "message_deleted": "Mensaje eliminado",
+  "error_sending_message": "Error al enviar el mensaje",
+  "today": "Hoy",
+  "yesterday": "Ayer",
+  "report": "Reportar",
+  "reply": "Responder",
+  "q_report_message": "¿Por qué reportas este mensaje?",
+  "q_report_user": "¿Quieres reportar o bloquear a este usuario?",
+  "report_user": "Reportar usuario",
+  "report_done": "Reporte enviado correctamente",
+  "next": "Siguiente",
+  "end": "Enviar"
+}

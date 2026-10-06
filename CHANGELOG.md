@@ -1,3 +1,8 @@
+## 0.0.3
+
+* Spanish (`es`) localizations (FantaFOne L08-004)
+* Guard `ScrollPosition.hasPixels` before jump/animate (Crashlytics null check)
+
 ## 0.0.2
 
 * Added logo image to README header

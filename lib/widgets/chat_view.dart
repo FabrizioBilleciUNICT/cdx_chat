@@ -182,10 +182,13 @@ class _ChatViewState extends State<ChatView> {
 
   void _scrollToBottom({bool animated = true}) {
     if (!_scrollController.hasClients) return;
-    
+    final position = _scrollController.position;
+    // hasClients can be true before layout; pixels! then throws.
+    if (!position.hasPixels || !position.hasContentDimensions) return;
+
     // Don't scroll if already at bottom (within threshold)
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
+    final maxScroll = position.maxScrollExtent;
+    final currentScroll = position.pixels;
     if ((maxScroll - currentScroll) < 10.0) {
       // Already at bottom, just update flag
       _isNearBottom = true;
@@ -218,7 +221,9 @@ class _ChatViewState extends State<ChatView> {
 
   void _scrollToMessage(String messageId) {
     if (!_scrollController.hasClients) return;
-    
+    final position = _scrollController.position;
+    if (!position.hasPixels || !position.hasContentDimensions) return;
+
     // Find the message in the list
     final messages = _provider.messages;
     final messageIndex = messages.indexWhere((msg) => msg.id == messageId);
@@ -230,7 +235,7 @@ class _ChatViewState extends State<ChatView> {
     final targetPosition = messageIndex * itemHeight;
     
     // Ensure we don't scroll beyond bounds
-    final maxScroll = _scrollController.position.maxScrollExtent;
+    final maxScroll = position.maxScrollExtent;
     final clampedPosition = targetPosition.clamp(0.0, maxScroll);
     
     _isProgrammaticScroll = true;
