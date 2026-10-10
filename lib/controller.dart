@@ -40,6 +40,10 @@ class ChatController extends ChangeNotifier {
   bool _isLoading = false;
   bool _hasMore = true;
   String? _error;
+  /// Live window size; [loadMore] grows it.
+  int _messageLimit = 50;
+  static const int _messageLimitStep = 50;
+  static const int _messageLimitMax = 500;
 
   // Unread state
   int _unreadCount = 0;
@@ -112,12 +116,16 @@ class ChatController extends ChangeNotifier {
     _messagesSubscription?.cancel();
     _messagesSubscription = service.watchMessages(
       chatId: chatId,
-      limit: 50,
+      limit: _messageLimit,
     ).listen(
       (messages) {
         _messages = messages;
         _isLoading = false;
         _error = null;
+        // If the page is short, there is nothing older to fetch.
+        if (messages.length < _messageLimit) {
+          _hasMore = false;
+        }
         notifyListeners();
       },
       onError: (error) {
@@ -135,15 +143,20 @@ class ChatController extends ChangeNotifier {
     _listenMessages();
   }
 
-  /// Loads more messages (pagination).
-  ///
-  /// Note: Pagination is currently disabled because watchMessages
-  /// is a continuous stream. In the future, a separate query can be
-  /// implemented for pagination if needed.
+  /// Loads an older page by widening the live [watchMessages] window.
   Future<void> loadMore() async {
-    // Pagination is not yet implemented for continuous streams
-    // Messages are automatically loaded via watchMessages
-    _hasMore = false;
+    if (!_hasMore || _isLoading) return;
+    if (_messageLimit >= _messageLimitMax) {
+      _hasMore = false;
+      notifyListeners();
+      return;
+    }
+    final previousCount = _messages.length;
+    _messageLimit = (_messageLimit + _messageLimitStep).clamp(0, _messageLimitMax);
+    _listenMessages();
+    // After re-subscribe, if count did not grow, stop offering more.
+    // (Listener updates _hasMore when the next snapshot arrives.)
+    if (previousCount == 0) return;
   }
 
   /// Listens to unread message count.
